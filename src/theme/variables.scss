@@ -1,0 +1,40 @@
+// For information on how to create your own theme, please refer to:
+// https://ionicframework.com/docs/theming/
+:root {
+  --ion-color-primary: #6C63FF;
+  --ion-color-primary-rgb: 108,99,255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255,255,255;
+  --ion-color-primary-shade: #4B44CC;
+  --ion-color-primary-tint: #A89CFF;
+
+  --ion-color-secondary: #00D4AA;
+  --ion-color-secondary-rgb: 0,212,170;
+  --ion-color-secondary-contrast: #000000;
+  --ion-color-secondary-shade: #00A882;
+  --ion-color-secondary-tint: #33DDBB;
+
+  --ion-color-danger: #FF4757;
+  --ion-color-danger-rgb: 255,71,87;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-shade: #CC3945;
+  --ion-color-danger-tint: #FF6B78;
+
+  --ion-color-success: #2ED573;
+  --ion-color-success-rgb: 46,213,115;
+  --ion-color-success-contrast: #000000;
+  --ion-color-success-shade: #25AA5C;
+  --ion-color-success-tint: #57DD8F;
+
+  --ion-background-color: #0D0D1A;
+  --ion-background-color-rgb: 13,13,26;
+  --ion-text-color: #FFFFFF;
+  --ion-text-color-rgb: 255,255,255;
+
+  --ion-card-background: #16162A;
+  --ion-item-background: #1E1E35;
+  --ion-toolbar-background: transparent;
+  --ion-tab-bar-background: #16162A;
+
+  --ion-font-family: 'SF Pro Display', 'Helvetica Neue', sans-serif;
+}

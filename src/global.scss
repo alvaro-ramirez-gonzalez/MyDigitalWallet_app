@@ -1,0 +1,117 @@
+@import "@ionic/angular/css/core.css";
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+:root {
+  --primary:          #6C63FF;
+  --primary-dark:     #4B44CC;
+  --primary-light:    #A89CFF;
+  --accent:           #00D4AA;
+  --accent-dark:      #00A882;
+  --danger:           #FF4757;
+  --warning:          #FFA502;
+  --success:          #2ED573;
+  --bg-dark:          #0D0D1A;
+  --bg-card:          #16162A;
+  --bg-surface:       #1E1E35;
+  --bg-elevated:      #252540;
+  --text-primary:     #FFFFFF;
+  --text-secondary:   #A0A0C0;
+  --text-muted:       #606080;
+  --border-color:     rgba(255,255,255,0.08);
+  --border-radius:    20px;
+  --border-radius-sm: 12px;
+  --border-radius-lg: 28px;
+  --shadow-card:      0 8px 32px rgba(108, 99, 255, 0.15);
+  --shadow-glow:      0 0 40px rgba(108, 99, 255, 0.3);
+  --font-display:     'SF Pro Display', 'Helvetica Neue', sans-serif;
+  --transition:       all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+ion-content {
+  --background: var(--bg-dark);
+  --color: var(--text-primary);
+}
+
+ion-header::after { display: none; }
+
+ion-toolbar {
+  --background: transparent;
+  --border-width: 0;
+  --color: var(--text-primary);
+}
+
+ion-tab-bar {
+  --background: var(--bg-card);
+  --border: none;
+  border-top: 1px solid var(--border-color);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+ion-tab-button {
+  --color: var(--text-muted);
+  --color-selected: var(--primary);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary-light), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 16px;
+}
+
+.label-muted {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+ion-button {
+  --border-radius: var(--border-radius-sm);
+  --box-shadow: none;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  height: 52px;
+  font-size: 15px;
+}
+
+.btn-primary {
+  --background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  --color: #fff;
+}
+
+.btn-outline {
+  --background: transparent;
+  --border-color: var(--primary);
+  --color: var(--primary);
+  --border-width: 1.5px;
+}
+
+::-webkit-scrollbar { display: none; }

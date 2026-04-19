@@ -1,0 +1,129 @@
+<ion-content class="payment-content" [fullscreen]="true">
+
+  <div class="bg-orb bg-orb--1"></div>
+  <div class="bg-orb bg-orb--2"></div>
+  <div class="payment-wrapper">
+    <div class="payment-header">
+      <button class="back-btn" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div class="header-text">
+        <h1>Realizar pago</h1>
+        <p>Selecciona tarjeta y confirma</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">Tarjeta de pago</h3>
+
+      <div *ngIf="isLoadingCards">
+        <app-skeleton-loading type="card"></app-skeleton-loading>
+      </div>
+
+      <div class="cards-scroll" *ngIf="!isLoadingCards && cards.length > 0">
+        <app-card
+          *ngFor="let card of cards"
+          [card]="card"
+          [isSelected]="selectedCard?.id === card.id"
+          (click)="selectCard(card)">
+        </app-card>
+      </div>
+
+      <div class="empty-cards" *ngIf="!isLoadingCards && cards.length === 0">
+        <ion-icon name="card-outline"></ion-icon>
+        <p>No tienes tarjetas. Agrega una primero.</p>
+        <button class="add-card-link" (click)="goToAddCard()">
+          Agregar tarjeta
+        </button>
+      </div>
+    </div>
+
+   
+    <div class="section" *ngIf="selectedCard">
+      <h3 class="section-title">Detalle del pago</h3>
+
+      <div class="payment-card glass-card">
+
+      
+        <div class="merchant-row">
+          <div class="merchant-icon">
+            <ion-icon name="storefront-outline"></ion-icon>
+          </div>
+          <div class="merchant-info">
+            <p class="merchant-label">Comercio</p>
+            <p class="merchant-name">{{ currentPayment.merchant }}</p>
+          </div>
+          <button class="refresh-btn" (click)="generateNewPayment()">
+            <ion-icon name="refresh-outline"></ion-icon>
+          </button>
+        </div>
+
+      
+        <div class="amount-section">
+          <p class="amount-label">Monto a pagar</p>
+          <h2 class="amount-value">
+            {{ currentPayment.amount | currencyCop }}
+          </h2>
+        </div>
+
+       
+        <div class="selected-card-row">
+          <ion-icon name="card-outline" class="card-icon"></ion-icon>
+          <div class="selected-card-info">
+            <p class="selected-card-brand">{{ selectedCard.brand }}</p>
+            <p class="selected-card-number">•••• {{ selectedCard.last4 }}</p>
+          </div>
+          <div class="card-brand-badge" [ngClass]="selectedCard.brand.toLowerCase()">
+            {{ selectedCard.brand === 'VISA' ? 'VISA' : 'MC' }}
+          </div>
+        </div>
+        <div class="payment-divider"></div>
+
+        <div class="payment-summary">
+          <div class="summary-row">
+            <span class="summary-label">Subtotal</span>
+            <span class="summary-value">{{ currentPayment.amount | currencyCop }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Comisión</span>
+            <span class="summary-value success-text">$0</span>
+          </div>
+          <div class="summary-row total-row">
+            <span class="summary-label">Total</span>
+            <span class="summary-value total-value">{{ currentPayment.amount | currencyCop }}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    
+    <div class="pay-action" *ngIf="selectedCard">
+      <ion-button
+        expand="block"
+        class="pay-btn"
+        (click)="onPay()"
+        [disabled]="isProcessing"
+      >
+        <ion-spinner *ngIf="isProcessing" name="crescent"></ion-spinner>
+        <span *ngIf="!isProcessing">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          Pagar {{ currentPayment.amount | currencyCop }}
+        </span>
+      </ion-button>
+      <p class="pay-security-text">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        Pago seguro y encriptado
+      </p>
+    </div>
+
+    <div class="section" *ngIf="recentTransactions.length > 0">
+      <h3 class="section-title">Pagos recientes</h3>
+      <app-transaction-list
+        [transactions]="recentTransactions"
+        [showEmojiPicker]="false">
+      </app-transaction-list>
+    </div>
+
+  </div>
+</ion-content>

@@ -1,0 +1,40 @@
+  <div class="tx-item glass-card"
+    (mousedown)="onLongPressStart()"
+    (mouseup)="onLongPressEnd()"
+    (touchstart)="onLongPressStart()"
+    (touchend)="onLongPressEnd()">
+
+    <div class="tx-main">
+      <div class="tx-icon">
+        <span *ngIf="transaction.emoji" class="tx-emoji">{{ transaction.emoji }}</span>
+        <ion-icon *ngIf="!transaction.emoji" name="storefront-outline"></ion-icon>
+      </div>
+
+      <div class="tx-info">
+        <p class="tx-merchant">{{ transaction.merchant }}</p>
+        <p class="tx-date">{{ formattedDate }}</p>
+      </div>
+
+      <div class="tx-amount">
+        <span class="amount-value" [class.success]="transaction.status === 'SUCCESS'">
+          -{{ formattedAmount }}
+        </span>
+        <span class="tx-status" [ngClass]="transaction.status.toLowerCase()">
+          {{ transaction.status === 'SUCCESS' ? 'Exitoso' : transaction.status }}
+        </span>
+      </div>
+    </div>
+
+    <div class="emoji-picker-overlay" *ngIf="showPicker" (click)="closePicker()">
+      <div class="emoji-picker-wrap" (click)="$event.stopPropagation()">
+        <emoji-mart
+          (emojiSelect)="onEmojiSelect($event)"
+          [darkMode]="true"
+          [showPreview]="false"
+          [isNative]="true"
+          set="apple">
+        </emoji-mart>
+      </div>
+    </div>
+
+  </div>

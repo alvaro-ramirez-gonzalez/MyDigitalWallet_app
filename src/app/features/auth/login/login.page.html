@@ -1,0 +1,92 @@
+<ion-content class="login-content" [fullscreen]="true">
+
+  <div class="bg-orb bg-orb--1"></div>
+  <div class="bg-orb bg-orb--2"></div>
+
+  <div class="login-wrapper">
+
+   
+    <div class="logo-section">
+      <div class="logo-icon">
+        <ion-icon name="wallet-outline"></ion-icon>
+      </div>
+      <h1 class="logo-title">MyDigital<span class="gradient-text">Wallet</span></h1>
+      <p class="logo-subtitle">Tu billetera inteligente</p>
+    </div>
+
+    <div class="form-card glass-card">
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+
+        <div class="input-group">
+          <label class="input-label">Correo electrónico</label>
+          <div class="input-wrapper" [class.error]="isFieldInvalid('email')">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="correo@ejemplo.com"
+              class="custom-input"
+            />
+          </div>
+          <span class="error-text" *ngIf="isFieldInvalid('email')">
+            Ingresa un correo válido
+          </span>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Contraseña</label>
+          <div class="input-wrapper" [class.error]="isFieldInvalid('password')">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Mínimo 6 caracteres"
+              class="custom-input"
+            />
+            <ion-icon
+              [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+              class="input-icon-right"
+              (click)="togglePassword()"
+            ></ion-icon>
+          </div>
+          <span class="error-text" *ngIf="isFieldInvalid('password')">
+            La contraseña debe tener al menos 6 caracteres
+          </span>
+        </div>
+
+        <ion-button
+          expand="block"
+          class="btn-primary login-btn"
+          type="submit"
+          [disabled]="loginForm.invalid || isLoading"
+        >
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+          <span *ngIf="!isLoading">Iniciar Sesión</span>
+        </ion-button>
+
+      </form>
+
+      
+      <div class="divider">
+        <span class="divider-line"></span>
+        <span class="divider-text">o continúa con</span>
+        <span class="divider-line"></span>
+      </div>
+
+     
+      <button class="google-btn" (click)="onGoogleLogin()">
+        <img src="assets/icons/google.svg" alt="Google" width="20" />
+        <span>Continuar con Google</span>
+      </button>
+
+    </div>
+
+  
+    <div class="login-footer">
+      <p>¿No tienes cuenta?
+        <span class="link-text" (click)="goToRegister()">Regístrate</span>
+      </p>
+    </div>
+
+  </div>
+</ion-content>

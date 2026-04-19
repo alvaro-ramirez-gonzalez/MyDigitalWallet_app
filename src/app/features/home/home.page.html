@@ -1,0 +1,100 @@
+<ion-content class="home-content" [fullscreen]="true">
+  <div class="bg-orb bg-orb--1"></div>
+  <div class="bg-orb bg-orb--2"></div>
+
+  <div class="home-wrapper">
+    <div class="home-header">
+      <div class="user-info">
+        <div class="avatar" (click)="goToProfile()">
+          <span>{{ userInitials }}</span>
+        </div>
+        <div class="greeting">
+          <p class="greeting-label">Bienvenido 👋</p>
+          <h2 class="greeting-name">{{ userName }}</h2>
+        </div>
+      </div>
+      <button class="notification-btn" (click)="onNotification()">
+        <ion-icon name="notifications-outline"></ion-icon>
+        <span class="notification-dot"></span>
+      </button>
+    </div>
+    <app-balance-display
+      [balance]="totalBalance"
+      [isVisible]="balanceVisible"
+      (toggleVisibility)="toggleBalance()">
+    </app-balance-display>
+
+   
+    <app-quick-actions
+      (onTransfer)="goToPayment()"
+      (onRecharge)="onRecharge()"
+      (onPay)="goToPayment()">
+    </app-quick-actions>
+
+    
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Mis tarjetas</h3>
+        <button class="see-all-btn" (click)="goToAddCard()">
+          <ion-icon name="add-circle-outline"></ion-icon>
+          <span>Agregar</span>
+        </button>
+      </div>
+
+      
+      <div *ngIf="isLoadingCards">
+        <app-skeleton-loading type="card"></app-skeleton-loading>
+      </div>
+
+     
+      <div *ngIf="!isLoadingCards">
+        <div *ngIf="cards.length === 0" class="empty-state">
+          <ion-icon name="card-outline"></ion-icon>
+          <p>No tienes tarjetas agregadas</p>
+          <button class="add-card-btn gradient-bg" (click)="goToAddCard()">
+            Agregar tarjeta
+          </button>
+        </div>
+
+        <div class="cards-scroll" *ngIf="cards.length > 0">
+          <app-card
+            *ngFor="let card of cards"
+            [card]="card"
+            [isSelected]="selectedCard?.id === card.id"
+            (click)="selectCard(card)">
+          </app-card>
+        </div>
+      </div>
+    </div>
+
+   
+    <div class="section">
+      <div class="section-header">
+        <h3 class="section-title">Movimientos</h3>
+        <button class="see-all-btn" (click)="toggleCalendar()">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <span>Filtrar</span>
+        </button>
+      </div>
+
+      <app-calendar
+        *ngIf="showCalendar"
+        (dateSelected)="filterByDate($event)">
+      </app-calendar>
+
+      <div *ngIf="isLoadingTx">
+        <app-skeleton-loading type="transaction"></app-skeleton-loading>
+        <app-skeleton-loading type="transaction"></app-skeleton-loading>
+        <app-skeleton-loading type="transaction"></app-skeleton-loading>
+      </div>
+
+      <app-transaction-list
+        *ngIf="!isLoadingTx"
+        [transactions]="transactions"
+        (emojiUpdated)="onEmojiUpdated($event)">
+      </app-transaction-list>
+
+    </div>
+
+  </div>
+</ion-content>

@@ -1,0 +1,156 @@
+<ion-content class="register-content" [fullscreen]="true">
+  <div class="bg-orb bg-orb--1"></div>
+  <div class="bg-orb bg-orb--2"></div>
+
+  <div class="register-wrapper">
+
+    <div class="register-header">
+      <button class="back-btn" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div class="header-text">
+        <h1>Crear cuenta</h1>
+        <p>Completa todos los campos</p>
+      </div>
+    </div>
+
+    <div class="form-card glass-card">
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+        <div class="input-row">
+          <div class="input-group">
+            <label class="input-label">Nombre</label>
+            <div class="input-wrapper" [class.error]="isFieldInvalid('nombre')">
+              <ion-icon name="person-outline" class="input-icon"></ion-icon>
+              <input type="text" formControlName="nombre"
+                placeholder="Juan" class="custom-input" />
+            </div>
+            <span class="error-text" *ngIf="isFieldInvalid('nombre')">
+              Requerido
+            </span>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">Apellido</label>
+            <div class="input-wrapper" [class.error]="isFieldInvalid('apellido')">
+              <ion-icon name="person-outline" class="input-icon"></ion-icon>
+              <input type="text" formControlName="apellido"
+                placeholder="Pérez" class="custom-input" />
+            </div>
+            <span class="error-text" *ngIf="isFieldInvalid('apellido')">
+              Requerido
+            </span>
+          </div>
+        </div>
+
+       
+        <div class="input-group">
+          <label class="input-label">Tipo de documento</label>
+          <div class="input-wrapper" [class.error]="isFieldInvalid('tipoDocumento')">
+            <ion-icon name="card-outline" class="input-icon"></ion-icon>
+            <select formControlName="tipoDocumento" class="custom-select">
+              <option value="" disabled selected>Selecciona tipo</option>
+              <option value="CC">Cédula de Ciudadanía</option>
+              <option value="CE">Cédula de Extranjería</option>
+              <option value="PASAPORTE">Pasaporte</option>
+            </select>
+          </div>
+        </div>
+
+       
+        <div class="input-group">
+          <label class="input-label">Número de documento</label>
+          <div class="input-wrapper" [class.error]="isFieldInvalid('numeroDocumento')">
+            <ion-icon name="document-text-outline" class="input-icon"></ion-icon>
+            <input type="text" formControlName="numeroDocumento"
+              placeholder="1234567890" class="custom-input" />
+          </div>
+          <span class="error-text" *ngIf="isFieldInvalid('numeroDocumento')">
+            Requerido
+          </span>
+        </div>
+
+   
+        <div class="input-group">
+          <label class="input-label">País</label>
+          <div class="input-wrapper" [class.error]="isFieldInvalid('pais')">
+            <ion-icon name="globe-outline" class="input-icon"></ion-icon>
+            <input type="text" formControlName="pais"
+              placeholder="Colombia" class="custom-input" />
+          </div>
+          <span class="error-text" *ngIf="isFieldInvalid('pais')">
+            Requerido
+          </span>
+        </div>
+
+      
+        <div class="input-group">
+          <label class="input-label">Correo electrónico</label>
+          <div class="input-wrapper" [class.error]="isFieldInvalid('email')">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <input type="email" formControlName="email"
+              placeholder="correo@ejemplo.com" class="custom-input" />
+          </div>
+          <span class="error-text" *ngIf="isFieldInvalid('email')">
+            Ingresa un correo válido
+          </span>
+        </div>
+
+       
+        <div class="input-group">
+          <label class="input-label">Contraseña</label>
+          <div class="input-wrapper" [class.error]="isFieldInvalid('password')">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <input [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Mínimo 6 caracteres" class="custom-input" />
+            <ion-icon
+              [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+              class="input-icon-right"
+              (click)="togglePassword()">
+            </ion-icon>
+          </div>
+          <span class="error-text" *ngIf="isFieldInvalid('password')">
+            Mínimo 6 caracteres
+          </span>
+        </div>
+
+       
+        <div class="input-group">
+          <label class="input-label">Confirmar contraseña</label>
+          <div class="input-wrapper" [class.error]="isFieldInvalid('confirmPassword')">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <input [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              placeholder="Repite tu contraseña" class="custom-input" />
+            <ion-icon
+              [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'"
+              class="input-icon-right"
+              (click)="toggleConfirmPassword()">
+            </ion-icon>
+          </div>
+          <span class="error-text" *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched">
+            Las contraseñas no coinciden
+          </span>
+        </div>
+
+        <ion-button
+          expand="block"
+          class="btn-primary register-btn"
+          type="submit"
+          [disabled]="registerForm.invalid || isLoading"
+        >
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+          <span *ngIf="!isLoading">Crear cuenta</span>
+        </ion-button>
+
+      </form>
+    </div>
+
+    <div class="register-footer">
+      <p>¿Ya tienes cuenta?
+        <span class="link-text" (click)="goBack()">Inicia sesión</span>
+      </p>
+    </div>
+
+  </div>
+</ion-content>

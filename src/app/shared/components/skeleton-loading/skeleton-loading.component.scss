@@ -1,0 +1,57 @@
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-surface) 25%,
+    var(--bg-elevated) 50%,
+    var(--bg-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+.skeleton-card {
+  min-width: 280px;
+  height: 170px;
+  background: var(--bg-surface);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid var(--border-color);
+}
+
+.skeleton-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skeleton-chip   { width: 32px; height: 24px; }
+.skeleton-brand  { width: 50px; height: 20px; }
+.skeleton-number { width: 70%;  height: 20px; align-self: center; }
+.skeleton-name   { width: 45%;  height: 16px; }
+.skeleton-exp    { width: 20%;  height: 16px; }
+
+.skeleton-tx {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  margin-bottom: 10px;
+}
+
+.skeleton-icon    { width: 44px; height: 44px; border-radius: 13px; flex-shrink: 0; }
+.skeleton-tx-info { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.skeleton-title   { height: 14px; width: 60%; }
+.skeleton-subtitle{ height: 12px; width: 35%; }
+.skeleton-amount  { width: 70px; height: 16px; }

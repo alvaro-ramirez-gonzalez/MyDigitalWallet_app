@@ -1,0 +1,100 @@
+.balance-card {
+  padding: 24px 20px;
+  margin-bottom: 8px;
+}
+
+.balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.balance-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.eye-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  ion-icon {
+    font-size: 16px;
+    color: var(--text-secondary);
+  }
+}
+
+.balance-amount {
+  margin-bottom: 20px;
+}
+
+.amount {
+  font-size: 34px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.hidden-amount {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-muted);
+  margin: 0;
+  letter-spacing: 4px;
+}
+
+.balance-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.balance-stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+
+  ion-icon {
+    font-size: 28px;
+  }
+}
+
+.income-icon { color: var(--success); }
+.expense-icon { color: var(--danger); }
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 0 0 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+
+  &.income { color: var(--success); }
+  &.expense { color: var(--danger); }
+}
+
+.balance-divider {
+  width: 1px;
+  height: 36px;
+  background: var(--border-color);
+}

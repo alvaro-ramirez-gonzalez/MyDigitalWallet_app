@@ -1,0 +1,13 @@
+<div class="transaction-list">
+  <div *ngIf="transactions.length === 0" class="empty-transactions">
+    <ion-icon name="receipt-outline"></ion-icon>
+    <p>Sin transacciones</p>
+  </div>
+
+  <app-transaction-item
+    *ngFor="let tx of transactions"
+    [transaction]="tx"
+    [showEmojiPicker]="showEmojiPicker"
+    (emojiUpdated)="onEmojiUpdated($event)">
+  </app-transaction-item>
+</div>

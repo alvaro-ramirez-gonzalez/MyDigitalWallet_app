@@ -1,0 +1,35 @@
+<div class="balance-card glass-card">
+  <div class="balance-header">
+    <span class="balance-label">Balance total</span>
+    <button class="eye-btn" (click)="toggle()">
+      <ion-icon [name]="isVisible ? 'eye-outline' : 'eye-off-outline'"></ion-icon>
+    </button>
+  </div>
+
+  <div class="balance-amount">
+    <h1 *ngIf="isVisible" class="amount gradient-text">
+      {{ formattedBalance }}
+    </h1>
+    <h1 *ngIf="!isVisible" class="amount hidden-amount">
+      •••• •••• ••••
+    </h1>
+  </div>
+
+  <div class="balance-footer">
+    <div class="balance-stat">
+      <ion-icon name="arrow-down-circle-outline" class="income-icon"></ion-icon>
+      <div>
+        <p class="stat-label">Ingresos</p>
+        <p class="stat-value income">+$50.000.000</p>
+      </div>
+    </div>
+    <div class="balance-divider"></div>
+    <div class="balance-stat">
+      <ion-icon name="arrow-up-circle-outline" class="expense-icon"></ion-icon>
+      <div>
+        <p class="stat-label">Gastos</p>
+        <p class="stat-value expense">-{{ formattedBalance }}</p>
+      </div>
+    </div>
+  </div>
+</div>

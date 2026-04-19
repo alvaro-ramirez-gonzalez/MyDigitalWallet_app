@@ -1,0 +1,161 @@
+<ion-content class="addcard-content" [fullscreen]="true">
+
+  <div class="bg-orb bg-orb--1"></div>
+  <div class="bg-orb bg-orb--2"></div>
+
+  <div class="addcard-wrapper">
+
+   
+    <div class="addcard-header">
+      <button class="back-btn" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <div class="header-text">
+        <h1>Agregar tarjeta</h1>
+        <p>Ingresa los datos de tu tarjeta</p>
+      </div>
+    </div>
+
+    <div class="card-preview" [ngClass]="cardBrandClass">
+      <div class="card-preview__top">
+        <div class="card-chip">
+          <div class="chip-line"></div>
+          <div class="chip-line"></div>
+          <div class="chip-line chip-line--vertical"></div>
+        </div>
+        <div class="card-brand-icon">
+          <span *ngIf="brand === 'VISA'" class="visa-text">VISA</span>
+          <span *ngIf="brand === 'MASTERCARD'" class="mc-circles">
+            <span class="mc-circle mc-circle--left"></span>
+            <span class="mc-circle mc-circle--right"></span>
+          </span>
+          <ion-icon *ngIf="brand === 'UNKNOWN'" name="card-outline"></ion-icon>
+        </div>
+      </div>
+
+      <div class="card-number-preview">
+        {{ cardNumberDisplay }}
+      </div>
+
+      <div class="card-preview__bottom">
+        <div class="card-holder">
+          <span class="card-detail-label">Titular</span>
+          <span class="card-detail-value">
+            {{ cardForm.get('cardholderName')?.value || 'NOMBRE APELLIDO' }}
+          </span>
+        </div>
+        <div class="card-expiry">
+          <span class="card-detail-label">Vence</span>
+          <span class="card-detail-value">
+            {{ cardForm.get('expiration')?.value || 'MM/YY' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card glass-card">
+      <form [formGroup]="cardForm" (ngSubmit)="onAddCard()">
+        <div class="input-group">
+          <label class="input-label">Número de tarjeta</label>
+          <div class="input-wrapper" [class.error]="isFieldInvalid('cardNumber')">
+            <ion-icon name="card-outline" class="input-icon"></ion-icon>
+            <input
+              type="text"
+              formControlName="cardNumber"
+              placeholder="0000 0000 0000 0000"
+              class="custom-input"
+              maxlength="19"
+              (input)="onCardNumberInput($event)"
+            />
+            <div class="brand-indicator">
+              <span *ngIf="brand === 'VISA'" class="visa-badge">VISA</span>
+              <span *ngIf="brand === 'MASTERCARD'" class="mc-badge">MC</span>
+            </div>
+          </div>
+          <span class="error-text" *ngIf="isFieldInvalid('cardNumber')">
+            Número de tarjeta inválido
+          </span>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Nombre del titular</label>
+          <div class="input-wrapper" [class.error]="isFieldInvalid('cardholderName')">
+            <ion-icon name="person-outline" class="input-icon"></ion-icon>
+            <input
+              type="text"
+              formControlName="cardholderName"
+              placeholder="Como aparece en la tarjeta"
+              class="custom-input"
+              (input)="onNameInput($event)"
+            />
+          </div>
+          <span class="error-text" *ngIf="isFieldInvalid('cardholderName')">
+            Requerido
+          </span>
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label class="input-label">Vencimiento</label>
+            <div class="input-wrapper" [class.error]="isFieldInvalid('expiration')">
+              <ion-icon name="calendar-outline" class="input-icon"></ion-icon>
+              <input
+                type="text"
+                formControlName="expiration"
+                placeholder="MM/YY"
+                class="custom-input"
+                maxlength="5"
+                (input)="onExpirationInput($event)"
+              />
+            </div>
+            <span class="error-text" *ngIf="isFieldInvalid('expiration')">
+              Formato MM/YY
+            </span>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">CVV</label>
+            <div class="input-wrapper" [class.error]="isFieldInvalid('cvv')">
+              <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+              <input
+                type="password"
+                formControlName="cvv"
+                placeholder="•••"
+                class="custom-input"
+                maxlength="4"
+              />
+            </div>
+            <span class="error-text" *ngIf="isFieldInvalid('cvv')">
+              CVV inválido
+            </span>
+          </div>
+        </div>
+        <div class="luhn-indicator" *ngIf="cardForm.get('cardNumber')?.value?.length >= 19">
+          <ion-icon
+            [name]="isLuhnValid ? 'checkmark-circle' : 'close-circle'"
+            [class.valid]="isLuhnValid"
+            [class.invalid]="!isLuhnValid">
+          </ion-icon>
+          <span [class.valid]="isLuhnValid" [class.invalid]="!isLuhnValid">
+            {{ isLuhnValid ? 'Tarjeta válida' : 'Número de tarjeta inválido' }}
+          </span>
+        </div>
+
+        <ion-button
+          expand="block"
+          class="btn-primary add-btn"
+          type="submit"
+          [disabled]="cardForm.invalid || !isLuhnValid || isLoading"
+        >
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+          <span *ngIf="!isLoading">
+            <ion-icon name="add-circle-outline"></ion-icon>
+            Agregar tarjeta
+          </span>
+        </ion-button>
+
+      </form>
+    </div>
+
+  </div>
+</ion-content>

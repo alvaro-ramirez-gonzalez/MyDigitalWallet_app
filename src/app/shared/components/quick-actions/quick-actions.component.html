@@ -1,0 +1,29 @@
+<div class="quick-actions">
+  <button class="action-btn" (click)="onTransfer.emit()">
+    <div class="action-icon transfer">
+      <ion-icon name="swap-horizontal-outline"></ion-icon>
+    </div>
+    <span class="action-label">Transferir</span>
+  </button>
+
+  <button class="action-btn" (click)="onRecharge.emit()">
+    <div class="action-icon recharge">
+      <ion-icon name="add-outline"></ion-icon>
+    </div>
+    <span class="action-label">Recargar</span>
+  </button>
+
+  <button class="action-btn" (click)="onPay.emit()">
+    <div class="action-icon pay">
+      <ion-icon name="send-outline"></ion-icon>
+    </div>
+    <span class="action-label">Pagar</span>
+  </button>
+
+  <button class="action-btn" (click)="null">
+    <div class="action-icon more">
+      <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
+    </div>
+    <span class="action-label">Más</span>
+  </button>
+</div>

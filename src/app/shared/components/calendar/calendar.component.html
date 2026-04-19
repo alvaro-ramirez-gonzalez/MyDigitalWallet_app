@@ -1,0 +1,14 @@
+<div class="calendar-wrap glass-card">
+  <div class="calendar-header">
+    <ion-icon name="calendar-outline"></ion-icon>
+    <span>Filtrar por fecha</span>
+  </div>
+  <ion-datetime
+    presentation="date"
+    [value]="selectedDate"
+    (ionChange)="onDateChange($event)"
+    [showDefaultButtons]="false"
+    color="primary"
+    class="custom-datetime">
+  </ion-datetime>
+</div>

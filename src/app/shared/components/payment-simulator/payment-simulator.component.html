@@ -1,0 +1,40 @@
+<div class="simulator-wrap glass-card">
+
+  <div class="simulator-header">
+    <h3 class="simulator-title">Simulador de pago</h3>
+    <button class="refresh-btn" (click)="generate()">
+      <ion-icon name="refresh-outline"></ion-icon>
+    </button>
+  </div>
+
+  <div class="merchant-row">
+    <div class="merchant-icon">
+      <ion-icon name="storefront-outline"></ion-icon>
+    </div>
+    <div class="merchant-info">
+      <p class="merchant-label">Comercio</p>
+      <p class="merchant-name">{{ currentPayment.merchant }}</p>
+    </div>
+  </div>
+
+  <div class="amount-section">
+    <p class="amount-label">Total a pagar</p>
+    <h2 class="amount-value gradient-text">{{ formattedAmount }}</h2>
+  </div>
+
+  <div class="card-row" *ngIf="card">
+    <ion-icon name="card-outline"></ion-icon>
+    <span class="card-info">{{ card.brand }} •••• {{ card.last4 }}</span>
+  </div>
+
+  <div class="simulator-actions">
+    <button class="cancel-btn" (click)="cancel()" [disabled]="isProcessing">
+      Cancelar
+    </button>
+    <button class="confirm-btn gradient-bg" (click)="confirm()" [disabled]="isProcessing">
+      <ion-icon name="shield-checkmark-outline"></ion-icon>
+      Confirmar pago
+    </button>
+  </div>
+
+</div>

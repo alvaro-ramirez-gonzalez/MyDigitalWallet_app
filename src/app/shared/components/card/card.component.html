@@ -1,0 +1,38 @@
+<div class="credit-card" [ngClass]="card.brand.toLowerCase()" [class.selected]="isSelected">
+
+  <div class="card-top">
+    <div class="card-chip">
+      <div class="chip-line"></div>
+      <div class="chip-line"></div>
+      <div class="chip-line chip-line--v"></div>
+    </div>
+    <div class="card-brand">
+      <span *ngIf="card.brand === 'VISA'" class="visa-text">VISA</span>
+      <span *ngIf="card.brand === 'MASTERCARD'" class="mc-wrap">
+        <span class="mc-circle left"></span>
+        <span class="mc-circle right"></span>
+      </span>
+      <ion-icon *ngIf="card.brand === 'UNKNOWN'" name="card-outline"></ion-icon>
+    </div>
+  </div>
+
+  <div class="card-number">
+    •••• •••• •••• {{ card.last4 }}
+  </div>
+
+  <div class="card-bottom">
+    <div class="card-holder">
+      <span class="card-meta-label">Titular</span>
+      <span class="card-meta-value">{{ card.cardholderName }}</span>
+    </div>
+    <div class="card-expiry">
+      <span class="card-meta-label">Vence</span>
+      <span class="card-meta-value">{{ card.expiration }}</span>
+    </div>
+  </div>
+
+  <div class="selected-indicator" *ngIf="isSelected">
+    <ion-icon name="checkmark-circle"></ion-icon>
+  </div>
+
+</div>

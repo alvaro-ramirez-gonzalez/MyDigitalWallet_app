@@ -1,0 +1,22 @@
+<!-- Card skeleton -->
+<div *ngIf="type === 'card'" class="skeleton-card">
+  <div class="skeleton-row">
+    <div class="skeleton skeleton-chip"></div>
+    <div class="skeleton skeleton-brand"></div>
+  </div>
+  <div class="skeleton skeleton-number"></div>
+  <div class="skeleton-row">
+    <div class="skeleton skeleton-name"></div>
+    <div class="skeleton skeleton-exp"></div>
+  </div>
+</div>
+
+
+<div *ngIf="type === 'transaction'" class="skeleton-tx">
+  <div class="skeleton skeleton-icon"></div>
+  <div class="skeleton-tx-info">
+    <div class="skeleton skeleton-title"></div>
+    <div class="skeleton skeleton-subtitle"></div>
+  </div>
+  <div class="skeleton skeleton-amount"></div>
+</div>

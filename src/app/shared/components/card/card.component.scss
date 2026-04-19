@@ -1,0 +1,139 @@
+.credit-card {
+  min-width: 280px;
+  height: 170px;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  background: linear-gradient(135deg, var(--primary-dark), var(--bg-card));
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+
+  &.visa {
+    background: linear-gradient(135deg, #1a237e, #283593);
+    box-shadow: 0 12px 40px rgba(26, 35, 126, 0.4);
+  }
+
+  &.mastercard {
+    background: linear-gradient(135deg, #880e4f, #b71c1c);
+    box-shadow: 0 12px 40px rgba(136, 14, 79, 0.4);
+  }
+
+  &.unknown {
+    background: linear-gradient(135deg, var(--primary-dark), var(--bg-surface));
+    box-shadow: var(--shadow-card);
+  }
+
+  &.selected {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0, 212, 170, 0.3);
+  }
+
+  &:active { transform: scale(0.97); }
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-chip {
+  width: 32px;
+  height: 24px;
+  background: linear-gradient(135deg, #f5d020, #f6af29);
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  padding: 3px;
+  position: relative;
+}
+
+.chip-line {
+  background: rgba(0,0,0,0.25);
+  border-radius: 1px;
+
+  &--v {
+    grid-column: 1 / -1;
+    height: 2px;
+    align-self: center;
+  }
+}
+
+.visa-text {
+  font-size: 20px;
+  font-weight: 900;
+  font-style: italic;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: -1px;
+}
+
+.mc-wrap {
+  display: flex;
+  position: relative;
+}
+
+.mc-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+
+  &.left {
+    background: rgba(235, 0, 27, 0.9);
+    z-index: 1;
+  }
+
+  &.right {
+    background: rgba(247, 158, 27, 0.9);
+    margin-left: -10px;
+  }
+}
+
+.card-number {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+}
+
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.card-meta-label {
+  display: block;
+  font-size: 9px;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.card-meta-value {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.selected-indicator {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  ion-icon {
+    font-size: 22px;
+    color: var(--accent);
+  }
+}
