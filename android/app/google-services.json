@@ -1,6 +1,6 @@
 {
   "project_info": {
-    "project_number": "574202598990",   
+    "project_number": "574202598990",
     "project_id": "mydigitalwallet-2b331",
     "storage_bucket": "mydigitalwallet-2b331.firebasestorage.app"
   },
@@ -13,6 +13,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "574202598990-q00gm6g1j96pafupbkhd8n3l3qdk9h9p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mydigitalwallet.app",
+            "certificate_hash": "f562b79ef4abaa128ac6d457233afcd0e110deae"
+          }
+        },
         {
           "client_id": "574202598990-a324nd7a8v2ikolu16e35oohgqvh2114.apps.googleusercontent.com",
           "client_type": 3

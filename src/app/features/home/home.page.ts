@@ -9,10 +9,11 @@ import { CardService } from '../../core/services/card';
 import { PaymentService } from '../../core/services/payment';
 import { ToastService } from '../../core/services/toast';
 import { ModalService } from '../../core/services/modal';
-
+import { DialogService } from '../../core/services/dialog'; 
 import { UserModel } from '../../core/models/user.model';
 import { CardModel } from '../../core/models/card.model';
 import { TransactionModel } from '../../core/models/transaction.model';
+
 
 @Component({
   selector: 'app-home',
@@ -42,7 +43,9 @@ export class HomePage implements OnInit, OnDestroy {
     private cardService: CardService,
     private paymentService: PaymentService,
     private toastService: ToastService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private dialogService: DialogService
+    
   ) {}
 
   ngOnInit(): void {
@@ -130,6 +133,21 @@ export class HomePage implements OnInit, OnDestroy {
   onEmojiUpdated(event: { id: string; emoji: string }): void {
     if (!this.user) return;
     this.paymentService.updateEmoji(this.user.uid, event.id, event.emoji);
+  }
+
+  async onLogout(): Promise<void> {
+    const confirmed = await this.dialogService.confirm(
+      'Cerrar sesión',
+      '¿Estás seguro que deseas cerrar sesión?'
+    );
+    if (!confirmed) return;
+
+    try {
+      await this.authService.logout();
+      this.router.navigate(['/auth/login'], { replaceUrl: true });
+    } catch (error) {
+      await this.toastService.showError('Error al cerrar sesión');
+    }
   }
 
   toggleBalance(): void { this.balanceVisible = !this.balanceVisible; }

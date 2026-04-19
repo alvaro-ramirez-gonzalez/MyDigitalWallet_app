@@ -1,114 +1,124 @@
-import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Injectable, NgZone } from '@angular/core';
+import { 
+  Auth, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signInWithPopup, 
+  GoogleAuthProvider, 
+  signInWithCredential, 
+  onAuthStateChanged,
+  User
+} from '@angular/fire/auth';
+import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { Capacitor } from '@capacitor/core';
 import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
-import firebase from 'firebase/compat/app';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { UserModel } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private currentUserSubject = new BehaviorSubject<firebase.User | null>(null);
-  public currentUser$: Observable<firebase.User | null> = this.currentUserSubject.asObservable();
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  public currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
 
   constructor(
-    private afAuth: AngularFireAuth,
-    private afs: AngularFirestore
+    private auth: Auth,
+    private firestore: Firestore,
+    private zone: NgZone
   ) {
-    this.afAuth.authState.subscribe(user => {
-      this.currentUserSubject.next(user);
+    // Escuchar cambios de usuario
+    onAuthStateChanged(this.auth, (user) => {
+      this.zone.run(() => {
+        this.currentUserSubject.next(user);
+      });
     });
   }
 
-  get currentUser(): firebase.User | null {
+  get currentUser() {
     return this.currentUserSubject.value;
   }
 
-  async loginWithEmail(email: string, password: string): Promise<firebase.User> {
-    const result = await this.afAuth.signInWithEmailAndPassword(email, password);
-    return result.user!;
+  async loginWithEmail(email: string, password: string) {
+    const result = await signInWithEmailAndPassword(this.auth, email, password);
+    return result.user;
   }
 
-  async registerWithEmail(email: string, password: string, userData: Partial<UserModel>): Promise<firebase.User> {
-    const result = await this.afAuth.createUserWithEmailAndPassword(email, password);
-    const user = result.user!;
+  async registerWithEmail(email: string, password: string, userData: any) {
+    const result = await createUserWithEmailAndPassword(this.auth, email, password);
+    await this.createUserIfNotExists(result.user, userData);
+    return result.user;
+  }
 
-    await this.afs.doc(`users/${user.uid}`).set({
-      ...userData,
-      uid: user.uid,
-      email: user.email,
-      biometricEnabled: false,
-      createdAt: new Date()
+  async loginWithGoogle() {
+    return Capacitor.isNativePlatform()
+      ? this.loginWithGoogleNative()
+      : this.loginWithGoogleWeb();
+  }
+
+  private async loginWithGoogleWeb() {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(this.auth, provider);
+    if (result.user) {
+      await this.createUserIfNotExists(result.user);
+      return result.user;
+    }
+    throw new Error('No user found');
+  }
+
+  private async loginWithGoogleNative() {
+    // 1. Inicializar plugin
+    await GoogleSignIn.initialize({
+      clientId: '574202598990-a324nd7a8v2ikolu16e35oohgqvh2114.apps.googleusercontent.com',
     });
 
-    return user;
-  }
-
-  async loginWithGoogle(): Promise<firebase.User> {
-    const isNative = Capacitor.isNativePlatform();
-    if (isNative) {
-      return this.loginWithGoogleNative();
-    } else {
-      return this.loginWithGoogleWeb();
-    }
-  }
-
-  private async loginWithGoogleWeb(): Promise<firebase.User> {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    
-    const result = await this.afAuth.signInWithPopup(provider);
-    const user = result.user!;
-    await this.syncGoogleUser(user);
-    return user;
-  }
-
-  private async loginWithGoogleNative(): Promise<firebase.User> {
-  
+    // 2. Obtener respuesta de Google
     const response = await GoogleSignIn.signIn();
     
-    const idToken = response.idToken;
+    if (!response.idToken) throw new Error('No ID Token');
 
-    if (!idToken) {
-      throw new Error('Google Sign-In cancelado o fallido.');
-    }
+    // 3. Crear credencial de Firebase
+    const credential = GoogleAuthProvider.credential(response.idToken);
 
-    const credential = firebase.auth.GoogleAuthProvider.credential(idToken);
-    const result = await this.afAuth.signInWithCredential(credential);
-    const user = result.user!;
-    await this.syncGoogleUser(user);
-    return user;
+    // 4. Autenticar usando zone.run para evitar el "Error al conectar"
+    return this.zone.run(async () => {
+      try {
+        const result = await signInWithCredential(this.auth, credential);
+        if (result.user) {
+          await this.createUserIfNotExists(result.user);
+          return result.user;
+        }
+        throw new Error('Login failed');
+      } catch (err) {
+        console.error("Firebase Auth Error:", err);
+        throw err;
+      }
+    });
   }
 
-  private async syncGoogleUser(user: firebase.User): Promise<void> {
-    const doc = await this.afs.doc(`users/${user.uid}`).get().toPromise();
-    if (!doc?.exists) {
-      await this.afs.doc(`users/${user.uid}`).set({
+  private async createUserIfNotExists(user: User, extraData: any = {}) {
+    const userRef = doc(this.firestore, `users/${user.uid}`);
+    const snapshot = await getDoc(userRef);
+
+    if (!snapshot.exists()) {
+      await setDoc(userRef, {
         uid: user.uid,
         email: user.email,
         nombre: user.displayName?.split(' ')[0] || '',
         apellido: user.displayName?.split(' ')[1] || '',
         biometricEnabled: false,
-        createdAt: new Date()
+        createdAt: new Date(),
+        ...extraData
       });
     }
   }
 
-  async logout(): Promise<void> {
-    const isNative = Capacitor.isNativePlatform();
-    if (isNative) {
-      try { 
-
-        await GoogleSignIn.signOut(); 
-      } catch (e) {
-        console.warn('Error al cerrar sesión en Google nativo', e);
-      }
+  async logout() {
+    if (Capacitor.isNativePlatform()) {
+      try { await GoogleSignIn.signOut(); } catch {}
     }
-    await this.afAuth.signOut();
+    await this.auth.signOut();
   }
 
   isAuthenticated(): boolean {
-    return !!this.currentUserSubject.value;
+    return !!this.currentUser;
   }
 }

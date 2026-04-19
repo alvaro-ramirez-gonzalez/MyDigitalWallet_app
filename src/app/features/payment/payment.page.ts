@@ -11,10 +11,10 @@ import { LoadingService } from '../../core/services/loading';
 import { DialogService } from '../../core/services/dialog';
 import { NotificationService } from '../../core/services/notification';
 import { UserService } from '../../core/services/user';
-
 import { CardModel } from '../../core/models/card.model';
 import { TransactionModel } from '../../core/models/transaction.model';
 import { UserModel } from '../../core/models/user.model';
+import { BiometricService } from '../../core/services/biometric'; 
 
 @Component({
   selector: 'app-payment',
@@ -43,7 +43,8 @@ export class PaymentPage implements OnInit, OnDestroy {
     private loadingService: LoadingService,
     private dialogService: DialogService,
     private notificationService: NotificationService,
-    private userService: UserService
+    private userService: UserService,
+    private biometricService: BiometricService // Corregido: Faltaba la inyección
   ) {}
 
   ngOnInit(): void {
@@ -92,6 +93,17 @@ export class PaymentPage implements OnInit, OnDestroy {
   async onPay(): Promise<void> {
     if (!this.selectedCard) return;
 
+    // 1. Verificar biometría antes de pagar
+    const biometricAvailable = await this.biometricService.isAvailable();
+    if (biometricAvailable) {
+      const verified = await this.biometricService.verify('Autorizar pago');
+      if (!verified) {
+        await this.toastService.showError('Verificación biométrica fallida');
+        return;
+      }
+    }
+
+    // 2. Confirmación de diálogo
     const confirmed = await this.dialogService.confirm(
       'Confirmar pago',
       `¿Deseas pagar ${this.currentPayment.amount.toLocaleString('es-CO', {

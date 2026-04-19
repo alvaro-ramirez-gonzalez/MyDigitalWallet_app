@@ -10,10 +10,10 @@ export const environment = {
     projectId: 'mydigitalwallet-2b331',
     storageBucket: 'mydigitalwallet-2b331.firebasestorage.app',
     messagingSenderId: '574202598990',
-    appId: '1:574202598990:web:ae6c750c9a2dab9dcd551f'
+    // REEMPLAZA ESTA LÍNEA POR EL ID DE ANDROID
+    appId: '1:574202598990:android:632a4684ea434253cd551f' 
   }
 };
-
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

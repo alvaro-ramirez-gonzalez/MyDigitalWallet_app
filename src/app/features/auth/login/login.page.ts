@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
 import { ToastService } from '../../../core/services/toast';
 import { LoadingService } from '../../../core/services/loading';
+import { BiometricService } from '../../../core/services/biometric';
 
 @Component({
   selector: 'app-login',
@@ -11,23 +12,51 @@ import { LoadingService } from '../../../core/services/loading';
   styleUrls: ['./login.page.scss'],
   standalone: false
 })
-export class LoginPage {
+export class LoginPage implements OnInit {
 
   loginForm: FormGroup;
   showPassword = false;
   isLoading = false;
+  biometricAvailable = false;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
     private toastService: ToastService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private biometricService: BiometricService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+  }
+
+  async ngOnInit(): Promise<void> {
+    this.biometricAvailable = await this.biometricService.isAvailable();
+    if (this.biometricAvailable) {
+      await this.tryBiometricLogin();
+    }
+  }
+
+  async tryBiometricLogin(): Promise<void> {
+    const credentials = await this.biometricService.getCredentials();
+    if (!credentials) return;
+
+    const verified = await this.biometricService.verify('Acceder a MyDigitalWallet');
+    if (!verified) return;
+
+    try {
+      await this.loadingService.show('Iniciando sesión...');
+      await this.authService.loginWithEmail(credentials.username, credentials.password);
+      await this.toastService.showSuccess('¡Bienvenido!');
+      this.router.navigate(['/home'], { replaceUrl: true });
+    } catch (error) {
+      await this.toastService.showError('Error al iniciar sesión con biometría');
+    } finally {
+      await this.loadingService.hide();
+    }
   }
 
   isFieldInvalid(field: string): boolean {
@@ -51,10 +80,16 @@ export class LoginPage {
     try {
       await this.loadingService.show('Iniciando sesión...');
       await this.authService.loginWithEmail(email, password);
+
+      if (this.biometricAvailable) {
+        await this.biometricService.saveCredentials(email, password);
+      }
+
       await this.toastService.showSuccess('¡Bienvenido de vuelta!');
       this.router.navigate(['/home'], { replaceUrl: true });
     } catch (error: any) {
       await this.toastService.showError(this.getErrorMessage(error.code));
+      console.error(error);
     } finally {
       this.isLoading = false;
       await this.loadingService.hide();
@@ -62,6 +97,7 @@ export class LoginPage {
   }
 
   async onGoogleLogin(): Promise<void> {
+    this.isLoading = true;
     try {
       await this.loadingService.show('Conectando con Google...');
       await this.authService.loginWithGoogle();
@@ -71,6 +107,7 @@ export class LoginPage {
       await this.toastService.showError('Error al conectar con Google');
       console.error(error);
     } finally {
+      this.isLoading = false;
       await this.loadingService.hide();
     }
   }

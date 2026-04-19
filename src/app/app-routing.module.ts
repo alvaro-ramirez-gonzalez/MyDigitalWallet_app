@@ -12,13 +12,13 @@ const routes: Routes = [
     canActivate: [AutoLoginGuard]
   },
   {
-  path: 'home',
-  loadChildren: () =>
-    import('./features/home/home.module').then(m => m.HomePageModule),
-  canActivate: [AuthGuard]
-},
+    path: 'home',
+    loadChildren: () =>
+      import('./features/home/home.module').then(m => m.HomePageModule),
+    canActivate: [AuthGuard]
+  },
   {
-    path: 'cards',
+    path: 'cards/add',
     loadChildren: () =>
       import('./features/cards/add-card/add-card.module').then(m => m.AddCardPageModule),
     canActivate: [AuthGuard]
@@ -29,6 +29,10 @@ const routes: Routes = [
       import('./features/payment/payment.module').then(m => m.PaymentPageModule),
     canActivate: [AuthGuard]
   },
+  {
+    path: '**',
+    redirectTo: 'auth/login'
+  }
 ];
 
 @NgModule({

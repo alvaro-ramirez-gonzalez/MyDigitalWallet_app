@@ -3,6 +3,7 @@
   <div class="bg-orb bg-orb--2"></div>
 
   <div class="home-wrapper">
+
     <div class="home-header">
       <div class="user-info">
         <div class="avatar" (click)="goToProfile()">
@@ -13,25 +14,29 @@
           <h2 class="greeting-name">{{ userName }}</h2>
         </div>
       </div>
-      <button class="notification-btn" (click)="onNotification()">
-        <ion-icon name="notifications-outline"></ion-icon>
-        <span class="notification-dot"></span>
-      </button>
+      <div class="header-actions">
+        <button class="notification-btn" (click)="onNotification()">
+          <ion-icon name="notifications-outline"></ion-icon>
+          <span class="notification-dot"></span>
+        </button>
+        <button class="logout-btn" (click)="onLogout()">
+          <ion-icon name="log-out-outline"></ion-icon>
+        </button>
+      </div>
     </div>
+
     <app-balance-display
       [balance]="totalBalance"
       [isVisible]="balanceVisible"
       (toggleVisibility)="toggleBalance()">
     </app-balance-display>
 
-   
     <app-quick-actions
       (onTransfer)="goToPayment()"
       (onRecharge)="onRecharge()"
       (onPay)="goToPayment()">
     </app-quick-actions>
 
-    
     <div class="section">
       <div class="section-header">
         <h3 class="section-title">Mis tarjetas</h3>
@@ -41,12 +46,10 @@
         </button>
       </div>
 
-      
       <div *ngIf="isLoadingCards">
         <app-skeleton-loading type="card"></app-skeleton-loading>
       </div>
 
-     
       <div *ngIf="!isLoadingCards">
         <div *ngIf="cards.length === 0" class="empty-state">
           <ion-icon name="card-outline"></ion-icon>
@@ -67,7 +70,6 @@
       </div>
     </div>
 
-   
     <div class="section">
       <div class="section-header">
         <h3 class="section-title">Movimientos</h3>
