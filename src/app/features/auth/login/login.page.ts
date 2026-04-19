@@ -9,7 +9,7 @@ import { LoadingService } from '../../../core/services/loading';
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
-   standalone: false
+  standalone: false
 })
 export class LoginPage {
 
@@ -64,10 +64,12 @@ export class LoginPage {
   async onGoogleLogin(): Promise<void> {
     try {
       await this.loadingService.show('Conectando con Google...');
-      
-      await this.toastService.showInfo('Google Sign-In próximamente');
-    } catch (error) {
+      await this.authService.loginWithGoogle();
+      await this.toastService.showSuccess('¡Bienvenido!');
+      this.router.navigate(['/home'], { replaceUrl: true });
+    } catch (error: any) {
       await this.toastService.showError('Error al conectar con Google');
+      console.error(error);
     } finally {
       await this.loadingService.hide();
     }
