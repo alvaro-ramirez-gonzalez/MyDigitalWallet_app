@@ -10,30 +10,40 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 :root {
-  --primary:          #6C63FF;
-  --primary-dark:     #4B44CC;
-  --primary-light:    #A89CFF;
-  --accent:           #00D4AA;
-  --accent-dark:      #00A882;
-  --danger:           #FF4757;
-  --warning:          #FFA502;
-  --success:          #2ED573;
-  --bg-dark:          #0D0D1A;
-  --bg-card:          #16162A;
-  --bg-surface:       #1E1E35;
-  --bg-elevated:      #252540;
-  --text-primary:     #FFFFFF;
-  --text-secondary:   #A0A0C0;
-  --text-muted:       #606080;
-  --border-color:     rgba(255,255,255,0.08);
-  --border-radius:    20px;
-  --border-radius-sm: 12px;
-  --border-radius-lg: 28px;
-  --shadow-card:      0 8px 32px rgba(108, 99, 255, 0.15);
-  --shadow-glow:      0 0 40px rgba(108, 99, 255, 0.3);
-  --font-display:     'SF Pro Display', 'Helvetica Neue', sans-serif;
-  --transition:       all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  --primary:           #6C63FF;
+  --primary-dark:      #4B44CC;
+  --primary-light:     #A89CFF;
+  --accent:            #00D4AA;
+  --bg-dark:           #0D0D1A;
+  --bg-card:           #16162A;
+  --text-primary:      #FFFFFF;
+  --text-muted:        #606080;
+  --border-color:      rgba(255,255,255,0.08);
+  --border-radius:     20px;
+  --border-radius-sm:  12px;
+
+  --ion-background-color: var(--bg-dark);
+  --ion-text-color: var(--text-primary);
+  --ion-item-background: var(--bg-card);
+  --ion-border-color: var(--border-color);
 }
+
+ion-loading, ion-alert {
+  --background: var(--bg-surface, #1E1E35) !important;
+  --color: var(--text-primary) !important;
+  
+  
+  .loading-content, .alert-message, .alert-title {
+    color: #ffffff !important;
+  }
+
+  /
+  ion-spinner {
+    --color: var(--primary) !important;
+  }
+}
+
 
 ion-content {
   --background: var(--bg-dark);
@@ -74,32 +84,12 @@ ion-tab-button {
   background-clip: text;
 }
 
-.gradient-bg {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-}
-
-.section-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0 0 16px;
-}
-
-.label-muted {
-  font-size: 12px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 600;
-}
 
 ion-button {
   --border-radius: var(--border-radius-sm);
   --box-shadow: none;
   font-weight: 600;
-  letter-spacing: 0.5px;
   height: 52px;
-  font-size: 15px;
 }
 
 .btn-primary {
@@ -107,11 +97,5 @@ ion-button {
   --color: #fff;
 }
 
-.btn-outline {
-  --background: transparent;
-  --border-color: var(--primary);
-  --color: var(--primary);
-  --border-width: 1.5px;
-}
 
 ::-webkit-scrollbar { display: none; }

@@ -2,31 +2,18 @@
   min-width: 280px;
   height: 170px;
   border-radius: 20px;
-  padding: 24px; // Un poco más de aire
+  padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
   cursor: pointer;
-  overflow: hidden; // Para que los brillos no se salgan
+  overflow: hidden;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 1px solid rgba(255, 255, 255, 0.1); // Borde sutil tipo cristal
-  
-  // Fondo por defecto con un brillo metálico sutil
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%), 
               var(--primary-dark);
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-
-  &::before { // Efecto de reflejo de luz
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    pointer-events: none;
-  }
 
   &.visa {
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
@@ -41,100 +28,47 @@
   &.selected {
     border: 2px solid var(--accent);
     transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 212, 170, 0.25);
   }
-
-  &:active { transform: scale(0.96); }
 }
 
 .card-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative; 
   z-index: 2;
 }
 
-.card-chip {
-  width: 36px;
-  height: 28px;
-  background: linear-gradient(135deg, #e0b030 0%, #ffecb3 50%, #b8860b 100%);
-  border-radius: 6px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 3px;
-  padding: 4px;
-  box-shadow: inset 0 1px 1px rgba(255,255,255,0.5);
-
-  .chip-line {
-    background: rgba(0,0,0,0.2);
-    border-radius: 1px;
-    &--v { grid-column: 1 / -1; height: 2px; align-self: center; }
-  }
-}
-
-.card-number {
-  font-size: 19px;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: 3px;
-  font-family: 'OCR A Std', 'Courier New', monospace;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  margin: 15px 0;
-  z-index: 2;
-}
-
-.card-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  z-index: 2;
-}
-
-.card-meta-label {
-  font-size: 8px;
-  color: rgba(255,255,255,0.6);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 4px;
-}
-
-.card-meta-value {
-  font-size: 13px;
-  font-weight: 500;
-  color: #fff;
-  text-transform: uppercase;
-}
-
-/* --- ACCIONES CRUD MEJORADAS --- */
-
-.card-actions {
+.card-crud-actions {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: -5px;
+  right: 55px; 
   display: flex;
-  gap: 10px;
+  gap: 8px;
   opacity: 0;
-  transform: translateX(10px);
+  transform: translateY(5px);
   transition: all 0.3s ease;
   z-index: 10;
 }
 
-.credit-card:hover .card-actions,
-.credit-card.selected .card-actions {
+
+.credit-card:hover .card-crud-actions,
+.credit-card.selected .card-crud-actions {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateY(0);
 }
 
-.card-action-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+.crud-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   backdrop-filter: blur(8px);
+  padding: 0; 
   transition: all 0.2s ease;
   
   ion-icon { 
@@ -142,27 +76,44 @@
     color: #fff;
   }
 
-  &.edit-btn {
+  &.edit {
     background: rgba(255, 255, 255, 0.2);
-    &:hover { background: rgba(255, 255, 255, 0.35); transform: scale(1.1); }
+    &:hover { background: rgba(255, 255, 255, 0.4); }
   }
 
-  &.delete-btn {
+  &.delete {
     background: rgba(255, 71, 87, 0.4);
-    &:hover { background: rgba(255, 71, 87, 0.7); transform: scale(1.1); }
+    &:hover { background: rgba(255, 71, 87, 0.7); }
   }
 
   &:active { transform: scale(0.9); }
 }
 
+/* --- RESTO DE ESTILOS --- */
+
+.card-chip {
+  width: 36px;
+  height: 26px;
+  background: linear-gradient(135deg, #e0b030 0%, #ffecb3 50%, #b8860b 100%);
+  border-radius: 5px;
+  padding: 4px;
+}
+
+.card-number {
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 2px;
+  font-family: monospace;
+  text-align: center;
+  margin: 10px 0;
+}
+
 .selected-indicator {
   position: absolute;
-  bottom: 15px; 
+  bottom: 15px;
   right: 15px;
-  
   ion-icon {
     font-size: 24px;
     color: var(--accent);
-    filter: drop-shadow(0 0 5px rgba(0, 212, 170, 0.5));
   }
 }

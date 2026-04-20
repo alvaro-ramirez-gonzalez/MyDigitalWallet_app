@@ -80,7 +80,6 @@ export class HomePage implements OnInit, OnDestroy {
           this.loadCards(user.uid);
           this.loadTransactions(user.uid);
 
-          // === LÓGICA DE NOTIFICACIÓN PARA EL PARCIAL ===
           try {
             await this.notificationService.initialize();
             await this.notificationService.authenticateNotificationService(
@@ -141,12 +140,20 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
-  // --- MÉTODOS CRUD (UPDATE & DELETE) ---
 
   onEditCard(card: CardModel): void {
+   
+    console.log('Editando tarjeta desde Home:', card);
+    
+
+    if (!card.id) {
+      this.toastService.showError('La tarjeta no tiene un ID válido');
+      return;
+    }
+
     
     this.router.navigate(['/cards/edit', card.id], {
-      state: { card }
+      state: { card } 
     });
   }
 
@@ -163,13 +170,14 @@ export class HomePage implements OnInit, OnDestroy {
     try {
       await this.cardService.deleteCard(this.user.uid, card.id);
       await this.notificationService.vibrateSuccess();
-      await this.toastService.showSuccess('Tarjeta eliminada');
-      
+      await this.toastService.showSuccess('Tarjeta eliminada correctamente');
+    
       if (this.selectedCard?.id === card.id) {
         this.selectedCard = this.cards.length > 0 ? this.cards[0] : null;
       }
     } catch (error) {
-      await this.toastService.showError('Error al eliminar la tarjeta');
+      console.error('Error al eliminar:', error);
+      await this.toastService.showError('No se pudo eliminar la tarjeta');
     }
   }
 
