@@ -79,31 +79,25 @@ export class HomePage implements OnInit, OnDestroy {
         if (user) {
           this.loadCards(user.uid);
           this.loadTransactions(user.uid);
-        }
 
-        // === LÓGICA DE NOTIFICACIÓN PARA EL PARCIAL ===
-        try {
-          // 1. Inicializamos permisos y servicios nativos
-          await this.notificationService.initialize();
-      
-          // 2. Login en el servidor de Railway (NotifyPro)
-          await this.notificationService.authenticateNotificationService(
-            'alvaro.ramirezgonzalez@unicolombo.edu.co', 
-            '0938haku'
-          );
+          // === LÓGICA DE NOTIFICACIÓN PARA EL PARCIAL ===
+          try {
+            await this.notificationService.initialize();
+            await this.notificationService.authenticateNotificationService(
+              'alvaro.ramirezgonzalez@unicolombo.edu.co', 
+              '0938haku'
+            );
 
-          // 3. Envío manual de prueba para marcar historial (1)
-          const tokenEnvio = user?.fcmToken || 'test-token-manual';
-          
-          await this.notificationService.sendPaymentNotification(
-            tokenEnvio,
-            'Login Exitoso', 
-            0
-          );
-          
-          console.log('✅ Notificación registrada en el historial de Railway');
-        } catch (error) {
-          console.warn('⚠️ Error en notificaciones:', error);
+            const tokenEnvio = user.fcmToken || 'test-token-manual';
+            await this.notificationService.sendPaymentNotification(
+              tokenEnvio,
+              'Login Exitoso', 
+              0
+            );
+            console.log('✅ Notificación registrada');
+          } catch (error) {
+            console.warn('⚠️ Error en notificaciones:', error);
+          }
         }
       });
   }
@@ -146,6 +140,40 @@ export class HomePage implements OnInit, OnDestroy {
         });
     }
   }
+
+  // --- MÉTODOS CRUD (UPDATE & DELETE) ---
+
+  onEditCard(card: CardModel): void {
+    
+    this.router.navigate(['/cards/edit', card.id], {
+      state: { card }
+    });
+  }
+
+  async onDeleteCard(card: CardModel): Promise<void> {
+    if (!this.user || !card.id) return;
+
+    const confirmed = await this.dialogService.confirm(
+      'Eliminar tarjeta',
+      `¿Deseas eliminar la tarjeta •••• ${card.last4}?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await this.cardService.deleteCard(this.user.uid, card.id);
+      await this.notificationService.vibrateSuccess();
+      await this.toastService.showSuccess('Tarjeta eliminada');
+      
+      if (this.selectedCard?.id === card.id) {
+        this.selectedCard = this.cards.length > 0 ? this.cards[0] : null;
+      }
+    } catch (error) {
+      await this.toastService.showError('Error al eliminar la tarjeta');
+    }
+  }
+
+  // --- OTROS MÉTODOS ---
 
   filterByDate(date: Date): void {
     if (!this.user) return;

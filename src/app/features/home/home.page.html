@@ -10,7 +10,7 @@
           <span>{{ userInitials }}</span>
         </div>
         <div class="greeting">
-          <p class="greeting-label">Bienvenido </p>
+          <p class="greeting-label">Bienvenido</p>
           <h2 class="greeting-name">{{ userName }}</h2>
         </div>
       </div>
@@ -64,7 +64,9 @@
             *ngFor="let card of cards"
             [card]="card"
             [isSelected]="selectedCard?.id === card.id"
-            (click)="selectCard(card)">
+            (click)="selectCard(card)"
+            (deleteCard)="onDeleteCard($event)"
+            (editCard)="onEditCard($event)">
           </app-card>
         </div>
       </div>
@@ -87,7 +89,6 @@
       <div *ngIf="isLoadingTx">
         <app-skeleton-loading type="transaction"></app-skeleton-loading>
         <app-skeleton-loading type="transaction"></app-skeleton-loading>
-        <app-skeleton-loading type="transaction"></app-skeleton-loading>
       </div>
 
       <app-transaction-list
@@ -96,7 +97,7 @@
         (emojiUpdated)="onEmojiUpdated($event)">
       </app-transaction-list>
 
-      <p class="instruction-text">Long press an expense for 2 seconds to add a reaction.</p>
+      <p class="instruction-text">Mantén presionado un movimiento para reaccionar.</p>
     </div>
 
   </div>
@@ -106,9 +107,9 @@
     <ng-template>
       <ion-header class="ion-no-border">
         <ion-toolbar>
-          <ion-title>✨ Choose your reaction</ion-title>
+          <ion-title>✨ Elige una reacción</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="showEmojiPicker = false">Close</ion-button>
+            <ion-button (click)="showEmojiPicker = false">Cerrar</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
@@ -120,8 +121,7 @@
             [darkMode]="false"
             [set]="'apple'"
             [perLine]="8"
-            [enableSearch]="true"
-            title="Pick your emoji…">
+            [enableSearch]="true">
           </emoji-mart>
         </div>
       </ion-content>

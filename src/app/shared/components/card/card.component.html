@@ -6,6 +6,16 @@
       <div class="chip-line"></div>
       <div class="chip-line chip-line--v"></div>
     </div>
+
+    <div class="card-crud-actions">
+      <button class="crud-btn edit" (click)="onEdit($event)">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </button>
+      <button class="crud-btn delete" (click)="onDelete($event)">
+        <ion-icon name="trash-outline"></ion-icon>
+      </button>
+    </div>
+
     <div class="card-brand">
       <span *ngIf="card.brand === 'VISA'" class="visa-text">VISA</span>
       <span *ngIf="card.brand === 'MASTERCARD'" class="mc-wrap">
@@ -22,8 +32,7 @@
 
   <div class="card-bottom">
     <div class="card-holder">
-      <span class="card-meta-label">Titular</span>
-      <span class="card-meta-value">{{ card.cardholderName }}</span>
+      <span class="card-meta-label">Titular</span> <span class="card-meta-value">{{ card.cardholderName }}</span>
     </div>
     <div class="card-expiry">
       <span class="card-meta-label">Vence</span>

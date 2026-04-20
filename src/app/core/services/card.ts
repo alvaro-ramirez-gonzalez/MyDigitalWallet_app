@@ -66,4 +66,10 @@ export class CardService {
   deleteCard(userId: string, cardId: string): Promise<void> {
     return this.firestoreService.deleteDocument(`users/${userId}/cards/${cardId}`);
   }
+  
+  updateCard(userId: string, cardId: string, data: Partial<CardModel>): Promise<void> {
+  return this.firestoreService.updateDocument(`users/${userId}/cards/${cardId}`, data);
+
+}
+
 }
