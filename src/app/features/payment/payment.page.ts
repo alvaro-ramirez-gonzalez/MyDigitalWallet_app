@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, take } from 'rxjs/operators';
 
 import { AuthService } from '../../core/services/auth';
 import { CardService } from '../../core/services/card';
@@ -11,10 +11,11 @@ import { LoadingService } from '../../core/services/loading';
 import { DialogService } from '../../core/services/dialog';
 import { NotificationService } from '../../core/services/notification';
 import { UserService } from '../../core/services/user';
+import { BiometricService } from '../../core/services/biometric';
+
 import { CardModel } from '../../core/models/card.model';
 import { TransactionModel } from '../../core/models/transaction.model';
 import { UserModel } from '../../core/models/user.model';
-import { BiometricService } from '../../core/services/biometric'; 
 
 @Component({
   selector: 'app-payment',
@@ -44,7 +45,7 @@ export class PaymentPage implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private notificationService: NotificationService,
     private userService: UserService,
-    private biometricService: BiometricService // Corregido: Faltaba la inyección
+    private biometricService: BiometricService
   ) {}
 
   ngOnInit(): void {
@@ -91,22 +92,24 @@ export class PaymentPage implements OnInit, OnDestroy {
   }
 
   async onPay(): Promise<void> {
-    if (!this.selectedCard) return;
+    if (!this.selectedCard) {
+      await this.toastService.showError('Por favor selecciona una tarjeta');
+      return;
+    }
 
-    // 1. Verificar biometría antes de pagar
     const biometricAvailable = await this.biometricService.isAvailable();
     if (biometricAvailable) {
-      const verified = await this.biometricService.verify('Autorizar pago');
+      const verified = await this.biometricService.verify('Autorizar pago MyDigitalWallet');
       if (!verified) {
-        await this.toastService.showError('Verificación biométrica fallida');
+        await this.notificationService.vibrateError();
+        await this.toastService.showError('Verificación de identidad necesaria');
         return;
       }
     }
 
-    // 2. Confirmación de diálogo
     const confirmed = await this.dialogService.confirm(
-      'Confirmar pago',
-      `¿Deseas pagar ${this.currentPayment.amount.toLocaleString('es-CO', {
+      'Confirmar transacción',
+      `¿Pagar ${this.currentPayment.amount.toLocaleString('es-CO', {
         style: 'currency', currency: 'COP', maximumFractionDigits: 0
       })} en ${this.currentPayment.merchant}?`
     );
@@ -119,7 +122,7 @@ export class PaymentPage implements OnInit, OnDestroy {
     this.isProcessing = true;
 
     try {
-      await this.loadingService.show('Procesando pago...');
+      await this.loadingService.show('Procesando transacción segura...');
 
       await this.paymentService.processPayment(
         user.uid,
@@ -130,25 +133,24 @@ export class PaymentPage implements OnInit, OnDestroy {
 
       await this.notificationService.vibrateSuccess();
 
-      this.userService.getUserProfile(user.uid)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(async (profile: UserModel) => {
-          if (profile?.fcmToken) {
-            await this.notificationService.sendPaymentNotification(
-              profile.fcmToken,
-              this.currentPayment.merchant,
-              this.currentPayment.amount
-            );
-          }
-        });
+      // Obtener perfil y enviar notificación
+      const profile = await this.userService.getUserProfile(user.uid).pipe(take(1)).toPromise();
+      if (profile?.fcmToken) {
+        await this.notificationService.sendPaymentNotification(
+          profile.fcmToken,
+          this.currentPayment.merchant,
+          this.currentPayment.amount
+        );
+      }
 
-      await this.toastService.showSuccess('¡Pago realizado exitosamente!');
+      await this.toastService.showSuccess('¡Pago realizado con éxito!');
       this.generateNewPayment();
       this.loadRecentTransactions(user.uid);
 
     } catch (error) {
+      console.error(error);
       await this.notificationService.vibrateError();
-      await this.toastService.showError('Error al procesar el pago');
+      await this.toastService.showError('No se pudo completar el pago');
     } finally {
       this.isProcessing = false;
       await this.loadingService.hide();

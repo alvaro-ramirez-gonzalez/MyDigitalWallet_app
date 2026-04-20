@@ -25,7 +25,7 @@ export class AuthService {
     private firestore: Firestore,
     private zone: NgZone
   ) {
-    // Escuchar cambios de usuario
+  
     onAuthStateChanged(this.auth, (user) => {
       this.zone.run(() => {
         this.currentUserSubject.next(user);
@@ -38,14 +38,18 @@ export class AuthService {
   }
 
   async loginWithEmail(email: string, password: string) {
-    const result = await signInWithEmailAndPassword(this.auth, email, password);
-    return result.user;
+    return this.zone.run(async () => {
+      const result = await signInWithEmailAndPassword(this.auth, email, password);
+      return result.user;
+    });
   }
 
   async registerWithEmail(email: string, password: string, userData: any) {
-    const result = await createUserWithEmailAndPassword(this.auth, email, password);
-    await this.createUserIfNotExists(result.user, userData);
-    return result.user;
+    return this.zone.run(async () => {
+      const result = await createUserWithEmailAndPassword(this.auth, email, password);
+      await this.createUserIfNotExists(result.user, userData);
+      return result.user;
+    });
   }
 
   async loginWithGoogle() {
@@ -56,29 +60,31 @@ export class AuthService {
 
   private async loginWithGoogleWeb() {
     const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(this.auth, provider);
-    if (result.user) {
-      await this.createUserIfNotExists(result.user);
-      return result.user;
-    }
-    throw new Error('No user found');
+    return this.zone.run(async () => {
+      try {
+        const result = await signInWithPopup(this.auth, provider);
+        if (result.user) {
+          await this.createUserIfNotExists(result.user);
+          return result.user;
+        }
+        throw new Error('No user found');
+      } catch (err) {
+        console.error("Web Google Auth Error:", err);
+        throw err;
+      }
+    });
   }
 
   private async loginWithGoogleNative() {
-    // 1. Inicializar plugin
     await GoogleSignIn.initialize({
       clientId: '574202598990-a324nd7a8v2ikolu16e35oohgqvh2114.apps.googleusercontent.com',
     });
 
-    // 2. Obtener respuesta de Google
     const response = await GoogleSignIn.signIn();
-    
     if (!response.idToken) throw new Error('No ID Token');
 
-    // 3. Crear credencial de Firebase
     const credential = GoogleAuthProvider.credential(response.idToken);
 
-    // 4. Autenticar usando zone.run para evitar el "Error al conectar"
     return this.zone.run(async () => {
       try {
         const result = await signInWithCredential(this.auth, credential);
@@ -88,7 +94,7 @@ export class AuthService {
         }
         throw new Error('Login failed');
       } catch (err) {
-        console.error("Firebase Auth Error:", err);
+        console.error("Native Google Auth Error:", err);
         throw err;
       }
     });
@@ -112,10 +118,12 @@ export class AuthService {
   }
 
   async logout() {
-    if (Capacitor.isNativePlatform()) {
-      try { await GoogleSignIn.signOut(); } catch {}
-    }
-    await this.auth.signOut();
+    return this.zone.run(async () => {
+      if (Capacitor.isNativePlatform()) {
+        try { await GoogleSignIn.signOut(); } catch {}
+      }
+      await this.auth.signOut();
+    });
   }
 
   isAuthenticated(): boolean {

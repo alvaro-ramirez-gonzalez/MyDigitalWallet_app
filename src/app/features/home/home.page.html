@@ -10,7 +10,7 @@
           <span>{{ userInitials }}</span>
         </div>
         <div class="greeting">
-          <p class="greeting-label">Bienvenido 👋</p>
+          <p class="greeting-label">Bienvenido </p>
           <h2 class="greeting-name">{{ userName }}</h2>
         </div>
       </div>
@@ -96,7 +96,36 @@
         (emojiUpdated)="onEmojiUpdated($event)">
       </app-transaction-list>
 
+      <p class="instruction-text">Long press an expense for 2 seconds to add a reaction.</p>
     </div>
 
   </div>
+
+  <ion-modal [isOpen]="showEmojiPicker" (ionModalDidDismiss)="showEmojiPicker = false" 
+             initialBreakpoint="0.5" [breakpoints]="[0, 0.5, 0.8]" handleBehavior="cycle">
+    <ng-template>
+      <ion-header class="ion-no-border">
+        <ion-toolbar>
+          <ion-title>✨ Choose your reaction</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="showEmojiPicker = false">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <div class="picker-wrapper">
+          <emoji-mart 
+            (emojiClick)="handleEmojiSelection($event)"
+            [showPreview]="false"
+            [darkMode]="false"
+            [set]="'apple'"
+            [perLine]="8"
+            [enableSearch]="true"
+            title="Pick your emoji…">
+          </emoji-mart>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
 </ion-content>

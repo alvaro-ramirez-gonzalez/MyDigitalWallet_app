@@ -10,8 +10,11 @@ export const environment = {
     projectId: 'mydigitalwallet-2b331',
     storageBucket: 'mydigitalwallet-2b331.firebasestorage.app',
     messagingSenderId: '574202598990',
-    // REEMPLAZA ESTA LÍNEA POR EL ID DE ANDROID
-    appId: '1:574202598990:android:632a4684ea434253cd551f' 
+    appId: '1:574202598990:web:ae6c750c9a2dab9dcd551f'
+  },
+  notificationService: {
+    email: 'alvaro.ramirezgonzalez@unicolombo.edu.co',
+    password: '0938haku'
   }
 };
 /*

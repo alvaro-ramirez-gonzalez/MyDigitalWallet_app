@@ -76,7 +76,12 @@
   margin: 0;
 }
 
-.notification-btn {
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.notification-btn, .logout-btn {
   position: relative;
   width: 42px;
   height: 42px;
@@ -94,6 +99,10 @@
   }
 }
 
+.logout-btn ion-icon {
+  color: var(--danger);
+}
+
 .notification-dot {
   position: absolute;
   top: 8px;
@@ -105,7 +114,6 @@
   border: 2px solid var(--bg-dark);
 }
 
-// Sections
 .section {
   margin-top: 32px;
 }
@@ -138,7 +146,7 @@
   ion-icon { font-size: 16px; }
 }
 
-// Cards scroll horizontal
+
 .cards-scroll {
   display: flex;
   gap: 16px;
@@ -149,7 +157,6 @@
   &::-webkit-scrollbar { display: none; }
 }
 
-// Empty state
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -179,4 +186,55 @@
   font-weight: 600;
   cursor: pointer;
   margin-top: 8px;
+}
+
+ion-modal {
+  --border-radius: 24px 24px 0 0;
+  --background: var(--bg-surface);
+
+  ion-toolbar {
+    --background: var(--bg-surface);
+    --color: var(--text-primary);
+    --border-width: 0;
+    padding-top: 8px;
+
+    ion-title {
+      font-weight: 700;
+      font-size: 16px;
+    }
+  }
+}
+
+.picker-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  background: var(--bg-surface);
+
+  emoji-mart {
+    width: 100% !important;
+    border: none !important;
+    
+    .emoji-mart {
+      background-color: transparent !important;
+      color: var(--text-primary) !important;
+    }
+    .emoji-mart-category-label span {
+      background: var(--bg-surface) !important;
+      color: var(--text-secondary) !important;
+    }
+    .emoji-mart-search input {
+      background: var(--bg-dark) !important;
+      border: 1px solid var(--border-color) !important;
+      color: var(--text-primary) !important;
+    }
+  }
+}
+
+.instruction-text {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 20px;
+  font-weight: 400;
 }

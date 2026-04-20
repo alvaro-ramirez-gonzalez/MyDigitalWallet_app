@@ -41,11 +41,16 @@ export class LoginPage implements OnInit {
   }
 
   async tryBiometricLogin(): Promise<void> {
+  
     const credentials = await this.biometricService.getCredentials();
-    if (!credentials) return;
-
-    const verified = await this.biometricService.verify('Acceder a MyDigitalWallet');
-    if (!verified) return;
+    
+    if (!credentials) {
+    
+      if (!this.isLoading) {
+        await this.toastService.showError('Debes iniciar sesión con clave una vez para activar la huella');
+      }
+      return;
+    }
 
     try {
       await this.loadingService.show('Iniciando sesión...');

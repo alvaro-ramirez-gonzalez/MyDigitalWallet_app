@@ -10,6 +10,7 @@ export class CardService {
 
   validateLuhn(cardNumber: string): boolean {
     const num = cardNumber.replace(/\s/g, '');
+    if (!num || /[^0-9-\s]+/.test(num)) return false; 
     let sum = 0;
     let isEven = false;
 
@@ -29,31 +30,28 @@ export class CardService {
     const num = cardNumber.replace(/\s/g, '');
     if (num.startsWith('4')) return 'VISA';
 
-    const prefix = parseInt(num.substring(0, 4), 10);
+    const prefix4 = parseInt(num.substring(0, 4), 10);
     const prefix2 = parseInt(num.substring(0, 2), 10);
 
-    if ((prefix2 >= 51 && prefix2 <= 55) || (prefix >= 2221 && prefix <= 2720)) {
+    if ((prefix2 >= 51 && prefix2 <= 55) || (prefix4 >= 2221 && prefix4 <= 2720)) {
       return 'MASTERCARD';
     }
 
     return 'UNKNOWN';
   }
 
-
   formatCardNumber(value: string): string {
-    return value.replace(/\s/g, '').replace(/(.{4})/g, '$1 ').trim();
+    return value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
   }
-
 
   formatExpiration(value: string): string {
     const clean = value.replace(/\D/g, '');
-    if (clean.length >= 2) {
+    if (clean.length > 2) {
       return clean.substring(0, 2) + '/' + clean.substring(2, 4);
     }
     return clean;
   }
 
-  
   getCards(userId: string): Observable<CardModel[]> {
     return this.firestoreService.getCollection<CardModel>(
       `users/${userId}/cards`,

@@ -10,10 +10,10 @@ import { PaymentService } from '../../core/services/payment';
 import { ToastService } from '../../core/services/toast';
 import { ModalService } from '../../core/services/modal';
 import { DialogService } from '../../core/services/dialog'; 
+import { NotificationService } from '../../core/services/notification'; 
 import { UserModel } from '../../core/models/user.model';
 import { CardModel } from '../../core/models/card.model';
 import { TransactionModel } from '../../core/models/transaction.model';
-
 
 @Component({
   selector: 'app-home',
@@ -34,6 +34,9 @@ export class HomePage implements OnInit, OnDestroy {
   isLoadingTx = true;
   showCalendar = false;
 
+  showEmojiPicker = false;
+  selectedTransactionId: string | null = null;
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -44,8 +47,8 @@ export class HomePage implements OnInit, OnDestroy {
     private paymentService: PaymentService,
     private toastService: ToastService,
     private modalService: ModalService,
-    private dialogService: DialogService
-    
+    private dialogService: DialogService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -70,11 +73,37 @@ export class HomePage implements OnInit, OnDestroy {
   private loadUserProfile(): void {
     this.userService.getCurrentUserProfile()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((user: UserModel | null) => {
+      .subscribe(async (user: UserModel | null) => {
         this.user = user;
+        
         if (user) {
           this.loadCards(user.uid);
           this.loadTransactions(user.uid);
+        }
+
+        // === LÓGICA DE NOTIFICACIÓN PARA EL PARCIAL ===
+        try {
+          // 1. Inicializamos permisos y servicios nativos
+          await this.notificationService.initialize();
+      
+          // 2. Login en el servidor de Railway (NotifyPro)
+          await this.notificationService.authenticateNotificationService(
+            'alvaro.ramirezgonzalez@unicolombo.edu.co', 
+            '0938haku'
+          );
+
+          // 3. Envío manual de prueba para marcar historial (1)
+          const tokenEnvio = user?.fcmToken || 'test-token-manual';
+          
+          await this.notificationService.sendPaymentNotification(
+            tokenEnvio,
+            'Login Exitoso', 
+            0
+          );
+          
+          console.log('✅ Notificación registrada en el historial de Railway');
+        } catch (error) {
+          console.warn('⚠️ Error en notificaciones:', error);
         }
       });
   }
@@ -130,9 +159,24 @@ export class HomePage implements OnInit, OnDestroy {
       });
   }
 
-  onEmojiUpdated(event: { id: string; emoji: string }): void {
-    if (!this.user) return;
-    this.paymentService.updateEmoji(this.user.uid, event.id, event.emoji);
+  async onEmojiUpdated(event: any): Promise<void> {
+    this.selectedTransactionId = event.id;
+    this.showEmojiPicker = true;
+    await this.notificationService.vibrateSuccess(); 
+  }
+
+  async handleEmojiSelection(event: any): Promise<void> {
+    if (!this.selectedTransactionId || !this.user) return;
+    const emoji = event.emoji.native;
+    try {
+      await this.paymentService.updateEmoji(this.user.uid, this.selectedTransactionId, emoji);
+      this.showEmojiPicker = false;
+      this.selectedTransactionId = null;
+      await this.notificationService.vibrateSuccess();
+      await this.toastService.showSuccess('Reacción añadida');
+    } catch (error) {
+      await this.toastService.showError('Error al guardar reacción');
+    }
   }
 
   async onLogout(): Promise<void> {
@@ -141,7 +185,6 @@ export class HomePage implements OnInit, OnDestroy {
       '¿Estás seguro que deseas cerrar sesión?'
     );
     if (!confirmed) return;
-
     try {
       await this.authService.logout();
       this.router.navigate(['/auth/login'], { replaceUrl: true });
@@ -152,7 +195,6 @@ export class HomePage implements OnInit, OnDestroy {
 
   toggleBalance(): void { this.balanceVisible = !this.balanceVisible; }
   toggleCalendar(): void { this.showCalendar = !this.showCalendar; }
-
   goToPayment(): void { this.router.navigate(['/payment']); }
   goToAddCard(): void { this.router.navigate(['/cards/add']); }
   goToProfile(): void { this.toastService.showInfo('Perfil próximamente'); }
