@@ -1,4 +1,4 @@
-@import "@ionic/angular/css/core.css";
+  @import "@ionic/angular/css/core.css";
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
@@ -10,47 +10,70 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 :root {
-  
   --primary:           #6C63FF;
   --primary-dark:      #4B44CC;
   --primary-light:     #A89CFF;
   --accent:            #00D4AA;
   --bg-dark:           #0D0D1A;
   --bg-card:           #16162A;
+  --bg-surface:        #1E1E35;
   --text-primary:      #FFFFFF;
   --text-muted:        #606080;
   --border-color:      rgba(255,255,255,0.08);
   --border-radius:     20px;
   --border-radius-sm:  12px;
 
-  --ion-background-color: var(--bg-dark);
-  --ion-text-color: var(--text-primary);
-  --ion-item-background: var(--bg-card);
-  --ion-border-color: var(--border-color);
+  /* Forzamos variables maestras de Ionic */
+  --ion-background-color: #0D0D1A !important;
+  --ion-text-color: #FFFFFF !important;
+  --ion-overlay-background-color: #1E1E35 !important;
 }
 
-ion-loading, ion-alert {
-  --background: var(--bg-surface, #1E1E35) !important;
-  --color: var(--text-primary) !important;
-  
-  
-  .loading-content, .alert-message, .alert-title {
-    color: #ffffff !important;
-  }
+/* === SOLUCIÓN DEFINITIVA PARA ANDROID NATIVO === */
 
-  /
-  ion-spinner {
-    --color: var(--primary) !important;
+/* 1. Atacamos el Shadow DOM */
+ion-alert, ion-loading {
+  --background: #1E1E35 !important;
+  
+  &::part(wrapper) {
+    background: #1E1E35 !important;
+    background-color: #1E1E35 !important;
+    color: #FFFFFF !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
 }
 
+/* 2. Atacamos las clases específicas que Android inyecta (Material Design) */
+.alert-wrapper.sc-ion-alert-md,
+.loading-wrapper.sc-ion-loading-md {
+  background: #1E1E35 !important;
+  background-color: #1E1E35 !important;
+  color: #FFFFFF !important;
+}
+
+/* 3. Forzamos el color de los textos internos */
+.alert-title.sc-ion-alert-md,
+.alert-message.sc-ion-alert-md,
+.loading-content.sc-ion-loading-md {
+  color: #FFFFFF !important;
+}
+
+/* 4. Color de botones y spinners */
+.alert-button.sc-ion-alert-md {
+  color: var(--accent) !important;
+}
+
+ion-spinner {
+  --color: var(--primary) !important;
+}
+
+/* === RESTO DE TUS ESTILOS === */
 
 ion-content {
   --background: var(--bg-dark);
   --color: var(--text-primary);
 }
-
-ion-header::after { display: none; }
 
 ion-toolbar {
   --background: transparent;
@@ -62,12 +85,6 @@ ion-tab-bar {
   --background: var(--bg-card);
   --border: none;
   border-top: 1px solid var(--border-color);
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-ion-tab-button {
-  --color: var(--text-muted);
-  --color-selected: var(--primary);
 }
 
 .glass-card {
@@ -77,17 +94,8 @@ ion-tab-button {
   border-radius: var(--border-radius);
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, var(--primary-light), var(--accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-
 ion-button {
   --border-radius: var(--border-radius-sm);
-  --box-shadow: none;
   font-weight: 600;
   height: 52px;
 }
@@ -96,6 +104,5 @@ ion-button {
   --background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   --color: #fff;
 }
-
 
 ::-webkit-scrollbar { display: none; }
